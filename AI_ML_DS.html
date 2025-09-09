@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>12‑Month AI · ML · DS · GenAI Roadmap</title>
+  <style>
+    :root {
+      --bg: #0b0d10;
+      --panel: #11151a;
+      --text: #e5e7eb;
+      --muted: #9aa4b2;
+      --primary: #60a5fa;
+      --accent: #22c55e;
+      --danger: #ef4444;
+      --ring: rgba(96,165,250,.45);
+      --shadow: 0 10px 30px rgba(0,0,0,.45);
+      --border: #1f2937;
+    }
+    body.light {
+      --bg: #f7f7fb;
+      --panel: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --primary: #2563eb;
+      --accent: #16a34a;
+      --danger: #dc2626;
+      --ring: rgba(37,99,235,.25);
+      --shadow: 0 10px 30px rgba(10,10,10,.08);
+      --border: #e5e7eb;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: linear-gradient(180deg, var(--bg), color-mix(in oklab, var(--bg) 85%, #0000));
+      color: var(--text);
+    }
+    .container { max-width: 1100px; margin: 24px auto 80px; padding: 0 16px; }
+    .header {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+    }
+    .title { font-size: clamp(22px, 3vw, 34px); font-weight: 800; letter-spacing: .2px; }
+    .subtitle { color: var(--muted); font-size: 14px; margin-top: 4px; }
+    .controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .btn {
+      background: var(--panel); color: var(--text); border: 1px solid var(--border);
+      padding: 10px 14px; border-radius: 12px; cursor: pointer; box-shadow: var(--shadow);
+      transition: transform .06s ease, background .2s ease, border-color .2s ease;
+    }
+    .btn:hover { transform: translateY(-1px); border-color: color-mix(in oklab, var(--primary) 45%, var(--border)); }
+    .btn:active { transform: translateY(0); }
+    .btn.primary { background: linear-gradient(180deg, color-mix(in oklab, var(--primary) 30%, var(--panel)), var(--panel)); border-color: color-mix(in oklab, var(--primary) 50%, var(--border)); }
+    .phase {
+      margin-top: 22px; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow);
+    }
+    .phase-head {
+      background: linear-gradient(180deg, color-mix(in oklab, var(--panel) 75%, #0000), var(--panel));
+      padding: 16px 18px; display:flex; align-items:center; gap:12px; justify-content: space-between; flex-wrap: wrap;
+    }
+    .phase-title { font-weight: 700; font-size: 18px; }
+    .phase-desc { color: var(--muted); font-size: 13px; }
+    .months { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; padding: 16px; }
+    .month {
+      border: 1px solid var(--border); border-radius: 16px; background: linear-gradient(180deg, color-mix(in oklab, var(--panel) 85%, #0000), var(--panel));
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .month-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 14px; border-bottom: 1px dashed var(--border); }
+    .month-title { font-weight: 700; }
+    .pill { font-size: 11px; color: var(--muted); border: 1px solid var(--border); padding: 4px 8px; border-radius: 999px; }
+    .toggle { display:flex; align-items:center; gap:8px; }
+    .month-content { display: none; padding: 14px; }
+    .month.open .month-content { display: block; animation: fade .2s ease; }
+    @keyframes fade { from { opacity: .7; transform: translateY(-2px); } to { opacity: 1; transform: translateY(0); } }
+
+    .topic { display:flex; align-items:flex-start; gap: 10px; padding: 8px 6px; border-radius: 10px; }
+    .topic:hover { background: color-mix(in oklab, var(--panel) 70%, #ffffff10); }
+    .topic input[type="checkbox"] { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--accent); cursor: pointer; }
+    .topic label { cursor: pointer; line-height: 1.35; }
+    .topic.done label { color: var(--muted); text-decoration: line-through; }
+
+    .progress { height: 8px; background: #0f172a33; border-radius: 999px; overflow: hidden; border:1px solid var(--border); }
+    .bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), color-mix(in oklab, var(--primary) 60%, var(--accent))); transition: width .25s ease; }
+
+    .footer { margin-top: 28px; color: var(--muted); font-size: 12px; text-align:center; }
+
+    .switch { position: relative; width: 54px; height: 30px; border-radius: 999px; background: var(--panel); border:1px solid var(--border); box-shadow: var(--shadow); }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .knob { position: absolute; top: 2px; left: 2px; width: 26px; height: 26px; border-radius: 50%; background: var(--text); transition: left .2s ease; }
+    .switch input:checked + .knob { left: 26px; }
+    .hint { color: var(--muted); font-size: 12px; }
+
+    .kpi { display:flex; align-items:center; gap:8px; font-size: 12px; color: var(--muted); }
+    .kpi strong { color: var(--text); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div>
+        <div class="title">12‑Month AI · ML · DS · GenAI Roadmap</div>
+        <div class="subtitle">Dark/Light toggle • Expand/Hide per month • Check off topics • Progress saved locally</div>
+      </div>
+      <div class="controls">
+        <button id="expandAll" class="btn">Expand All</button>
+        <button id="collapseAll" class="btn">Collapse All</button>
+        <button id="resetAll" class="btn" title="Clear all checkmarks & progress">Reset</button>
+        <div>
+          <div class="hint" style="margin-bottom:6px; text-align:center;">Theme</div>
+          <label class="switch" aria-label="Toggle theme">
+            <input id="themeToggle" type="checkbox" />
+            <span class="knob"></span>
+          </label>
+        </div>
+      </div>
+    </header>
+
+    <!-- Phases & Months -->
+    <section id="roadmap"></section>
+
+    <p class="footer">Tip: Your checklist and theme are stored in your browser (localStorage). You can export/import from DevTools if needed.</p>
+  </div>
+
+  <script>
+    // ---- Data --------------------------------------------------------------
+    const DATA = [
+      { phase: 'Phase 1: Foundations (Months 1–3)', desc: 'Python, EDA, Intro ML', months: [
+        { name: 'Month 1 — Python & DS Basics', topics: [
+          'Python essentials: Data types, loops, functions, OOP',
+          'Libraries: NumPy, Pandas, Matplotlib, Seaborn',
+          'Data cleaning, missing value handling',
+          'Math basics: Linear algebra (vectors, matrices), probability'
+        ] },
+        { name: 'Month 2 — Core Data Analysis & EDA', topics: [
+          'Exploratory Data Analysis (EDA)',
+          'Feature engineering (encoding, scaling)',
+          'SQL for Data Science',
+          'Basic statistics & hypothesis testing'
+        ] },
+        { name: 'Month 3 — Intro to Machine Learning', topics: [
+          'Supervised: Linear & Logistic Regression, Decision Trees',
+          'Unsupervised: Clustering (K‑Means, PCA)',
+          'Evaluation: Cross‑validation, confusion matrix, ROC',
+          'Project: Analyze a dataset (e.g., churn or sales)'
+        ] }
+      ]},
+      { phase: 'Phase 2: Intermediate ML & AI (Months 4–6)', desc: 'Advanced ML & Deep Learning', months: [
+        { name: 'Month 4 — Advanced Machine Learning', topics: [
+          'Ensemble Methods: Random Forest, XGBoost, Gradient Boosting',
+          'Regularization: Lasso, Ridge, ElasticNet',
+          'Feature importance & selection'
+        ] },
+        { name: 'Month 5 — Deep Learning (Part 1)', topics: [
+          'Neural networks & backpropagation',
+          'TensorFlow / PyTorch basics',
+          'Convolutional Neural Networks (CNNs)'
+        ] },
+        { name: 'Month 6 — Deep Learning (Part 2)', topics: [
+          'Recurrent Neural Networks (RNN, LSTM, GRU)',
+          'Attention Mechanism',
+          'Autoencoders',
+          'Project: Image classification + basic NLP (sentiment)'
+        ] }
+      ]},
+      { phase: 'Phase 3: Specialized AI & DS (Months 7–9)', desc: 'NLP, Time Series, RL', months: [
+        { name: 'Month 7 — Natural Language Processing (NLP)', topics: [
+          'Tokenization, embeddings (Word2Vec, GloVe)',
+          'Transformers (BERT, GPT architecture overview)',
+          'Text classification, summarization'
+        ] },
+        { name: 'Month 8 — Time Series & Forecasting', topics: [
+          'ARIMA, SARIMA, Prophet',
+          'LSTM/GRU for time series',
+          'Anomaly detection'
+        ] },
+        { name: 'Month 9 — Reinforcement Learning', topics: [
+          'Q‑Learning & Policy Gradients',
+          'Deep Q‑Networks (DQN)',
+          'Applications: Trading, robotics, games'
+        ] }
+      ]},
+      { phase: 'Phase 4: GenAI & Industry Readiness (Months 10–12)', desc: 'GenAI, MLOps, Capstone', months: [
+        { name: 'Month 10 — Generative AI (GenAI)', topics: [
+          'GANs (Generative Adversarial Networks)',
+          'Diffusion models (DALL·E, Stable Diffusion concepts)',
+          'Prompt engineering & fine‑tuning LLMs'
+        ] },
+        { name: 'Month 11 — AI Deployment & ML Ops', topics: [
+          'Model serving: FastAPI, Flask, Streamlit',
+          'Containerization: Docker',
+          'CI/CD & Monitoring basics'
+        ] },
+        { name: 'Month 12 — Capstone Project & Research', topics: [
+          'Build a full‑scale AI system (trading bot / med‑image classifier / LLM chatbot)',
+          'Prepare for job interviews',
+          'Read research papers effectively'
+        ] }
+      ]}
+    ];
+
+    // ---- Storage helpers ---------------------------------------------------
+    const KEY_THEME = 'roadmap.theme';
+    const KEY_DONE = 'roadmap.done';
+
+    function loadDone() { try { return JSON.parse(localStorage.getItem(KEY_DONE) || '{}'); } catch { return {}; } }
+    function saveDone(map) { localStorage.setItem(KEY_DONE, JSON.stringify(map)); }
+
+    // ---- Render ------------------------------------------------------------
+    const wrap = document.getElementById('roadmap');
+    const doneMap = loadDone();
+
+    function idFor(path) { return path.replace(/[^a-z0-9]+/gi, '-').toLowerCase(); }
+
+    function render() {
+      wrap.innerHTML = '';
+      DATA.forEach((block, pIdx) => {
+        const phaseEl = document.createElement('div');
+        phaseEl.className = 'phase';
+
+        const head = document.createElement('div');
+        head.className = 'phase-head';
+        head.innerHTML = `
+          <div>
+            <div class="phase-title">${block.phase}</div>
+            <div class="phase-desc">${block.desc}</div>
+          </div>
+          <div class="kpi" id="kpi-${pIdx}">Phase progress: <strong>0%</strong></div>
+        `;
+        phaseEl.appendChild(head);
+
+        const grid = document.createElement('div');
+        grid.className = 'months';
+
+        block.months.forEach((m, mIdx) => {
+          const mid = idFor(`${block.phase}-${m.name}`);
+          const month = document.createElement('div');
+          month.className = 'month';
+          month.dataset.monthId = mid;
+
+          const monthHead = document.createElement('div');
+          monthHead.className = 'month-head';
+          monthHead.innerHTML = `
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div class="month-title">${m.name}</div>
+              <span class="pill" id="pill-${mid}">0% complete</span>
+            </div>
+            <div class="toggle">
+              <button class="btn" data-action="toggle">Explore</button>
+            </div>
+          `;
+
+          const content = document.createElement('div');
+          content.className = 'month-content';
+
+          // Topics list
+          m.topics.forEach((t, tIdx) => {
+            const tid = idFor(`${mid}-topic-${tIdx}`);
+            const row = document.createElement('div');
+            row.className = 'topic';
+            row.innerHTML = `
+              <input type="checkbox" id="${tid}" ${doneMap[tid] ? 'checked' : ''} />
+              <label for="${tid}">${t}</label>
+            `;
+            if (doneMap[tid]) row.classList.add('done');
+            row.querySelector('input').addEventListener('change', (e) => {
+              doneMap[tid] = e.target.checked; saveDone(doneMap);
+              row.classList.toggle('done', e.target.checked);
+              updateMonthProgress(mid, m.topics.length);
+              updatePhaseProgress(pIdx);
+            });
+            content.appendChild(row);
+          });
+
+          // Progress bar
+          const progWrap = document.createElement('div');
+          progWrap.style.marginTop = '8px';
+          progWrap.innerHTML = `
+            <div class="progress"><div class="bar" id="bar-${mid}"></div></div>
+          `;
+          content.appendChild(progWrap);
+
+          month.appendChild(monthHead);
+          month.appendChild(content);
+          grid.appendChild(month);
+
+          monthHead.querySelector('[data-action="toggle"]').addEventListener('click', () => {
+            const isOpen = month.classList.toggle('open');
+            monthHead.querySelector('[data-action="toggle"]').textContent = isOpen ? 'Hide' : 'Explore';
+          });
+
+          // initialize progress
+          updateMonthProgress(mid, m.topics.length);
+        });
+
+        phaseEl.appendChild(grid);
+        wrap.appendChild(phaseEl);
+
+        // initialize phase progress
+        updatePhaseProgress(pIdx);
+      });
+    }
+
+    function updateMonthProgress(mid, total) {
+      const bar = document.getElementById(`bar-${mid}`);
+      const pill = document.getElementById(`pill-${mid}`);
+      let done = 0;
+      for (let i = 0; i < total; i++) {
+        const tid = idFor(`${mid}-topic-${i}`);
+        if (doneMap[tid]) done++;
+      }
+      const pct = Math.round((done / total) * 100);
+      if (bar) bar.style.width = pct + '%';
+      if (pill) pill.textContent = `${pct}% complete`;
+    }
+
+    function updatePhaseProgress(pIdx) {
+      const block = DATA[pIdx];
+      let sum = 0, count = 0;
+      block.months.forEach((m) => {
+        count += m.topics.length;
+        m.topics.forEach((_, i) => { const tid = idFor(`${idFor(block.phase + '-' + m.name)}-topic-${i}`); if (doneMap[tid]) sum++; });
+      });
+      const pct = count ? Math.round((sum / count) * 100) : 0;
+      const k = document.getElementById(`kpi-${pIdx}`);
+      if (k) k.querySelector('strong').textContent = pct + '%';
+    }
+
+    // ---- Theme -------------------------------------------------------------
+    const themeToggle = document.getElementById('themeToggle');
+    function applyTheme(t) {
+      document.body.classList.toggle('light', t === 'light');
+      themeToggle.checked = (t === 'light');
+      localStorage.setItem(KEY_THEME, t);
+    }
+    const savedTheme = localStorage.getItem(KEY_THEME) || 'dark';
+    applyTheme(savedTheme);
+    themeToggle.addEventListener('change', () => applyTheme(themeToggle.checked ? 'light' : 'dark'));
+
+    // ---- Global controls ---------------------------------------------------
+    document.getElementById('expandAll').addEventListener('click', () => {
+      document.querySelectorAll('.month').forEach(m => {
+        m.classList.add('open');
+        m.querySelector('[data-action="toggle"]').textContent = 'Hide';
+      });
+    });
+    document.getElementById('collapseAll').addEventListener('click', () => {
+      document.querySelectorAll('.month').forEach(m => {
+        m.classList.remove('open');
+        m.querySelector('[data-action="toggle"]').textContent = 'Explore';
+      });
+    });
+    document.getElementById('resetAll').addEventListener('click', () => {
+      if (!confirm('Reset all checkboxes and progress?')) return;
+      localStorage.removeItem(KEY_DONE);
+      Object.keys(doneMap).forEach(k => delete doneMap[k]);
+      render();
+    });
+
+    // Boot
+    render();
+  </script>
+</body>
+</html>
